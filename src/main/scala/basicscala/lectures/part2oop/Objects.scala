@@ -1,7 +1,5 @@
 package basicscala.lectures.part2oop
 
-import javax.naming.ldap.PagedResultsControl
-
 object Objects extends App {
 
   // object can't take parameters

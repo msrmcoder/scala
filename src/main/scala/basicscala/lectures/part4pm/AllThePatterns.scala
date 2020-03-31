@@ -1,6 +1,6 @@
 package basicscala.lectures.part4pm
 
-import exercise.{Cons, Empty, MyList}
+import basicscala.exercise.{Cons, Empty, MyList}
 
 object AllThePatterns extends App {
 

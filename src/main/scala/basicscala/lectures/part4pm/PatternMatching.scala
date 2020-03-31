@@ -1,7 +1,5 @@
 package basicscala.lectures.part4pm
 
-import sun.awt.SunToolkit.OperationTimedOut
-
 import scala.util.Random
 
 object PatternMatching extends App {
