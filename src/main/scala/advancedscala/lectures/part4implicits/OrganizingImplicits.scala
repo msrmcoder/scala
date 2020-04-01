@@ -77,5 +77,4 @@ object OrganizingImplicits extends App {
   }
 
   println(purchases.sorted)
-
 }
