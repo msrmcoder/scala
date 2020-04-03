@@ -52,7 +52,7 @@ object PimpMyLibrary extends App {
       Keep enriching Int class
        - times(function)
          3.times(() => ...)
-       - *
+       - * method with List
          3 * List(1,2) => List(1,2,1,2,1,2)
    */
   implicit class RichString(value: String) {

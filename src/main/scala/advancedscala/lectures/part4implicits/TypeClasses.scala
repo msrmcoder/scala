@@ -1,7 +1,7 @@
 package advancedscala.lectures.part4implicits
 
 object TypeClasses extends App {
-  // design approach 1:-
+  // design approach 1:- without type
   trait HTMLWritable {
     def toHtml: String
   }
@@ -10,7 +10,7 @@ object TypeClasses extends App {
     def toHtml: String = s"<div>$name ($age yo) <a href=$email/> </div>"
   }
 
-  User("John", 23, "john@gmail.com").toHtml
+  println(User("John", 23, "john@gmail.com").toHtml)
   /*
     1. works only for the types we write
     2. ONE implementation out of quite a number
@@ -31,7 +31,7 @@ object TypeClasses extends App {
       - need to modify this code every time
       - still ONE implementation
    */
-
+  // design approach 2:- with type
   trait HTMLSerializer[T] {
     def serialize(value: T): String
   }
@@ -60,6 +60,7 @@ object TypeClasses extends App {
 
     def apply[T](implicit serializer: HTMLSerializer[T]) = serializer;
   }
+
   implicit object IntSerializer extends HTMLSerializer[Int] {
     def serialize(value: Int): String = s"<div style='color: blue'>$value</div>"
   }
@@ -71,5 +72,57 @@ object TypeClasses extends App {
 
   println(HTMLSerializer[Int].serialize(42)) // provides ability to access all methods of HTMLSerializer through implicits
 
+  // part 3
+  implicit class HTMLEnrichment[T](value: T) {
+    def toHTML(implicit serializer: HTMLSerializer[T]): String = serializer.serialize(value)
+  }
 
+  println(john.toHTML(UserSerializer)) // compiler println(new HTMLEnrichment[User](john).toHTML(UserSerializer))
+  println(john.toHTML)
+
+  /*
+    - extend functionality to new types (anyType toHTML)
+   */
+  println(2.toHTML)
+  println(john.toHTML(PartialUserSerializer))
+
+  /*
+    // This pattern is super expressive
+    - type class itself HTMLSerializer[T] {...}
+    - type class instance (some of which are implicit) UserSerializer, IntSerializer, etc.,
+    - conversion with implicit classes -- HTMLEnrichment
+   */
+
+  // context bounds
+  println("Context bounds")
+  def htmlBoilerplate[T](value: T)(implicit serializer: HTMLSerializer[T]): String =
+    s"<html><body>${value.toHTML(serializer)}</body></html>"
+
+  println(htmlBoilerplate(john))
+  println(htmlBoilerplate(john)(PartialUserSerializer))
+
+  // implicit UserSerializer used automatically
+  // adv: context bound makes the method name shortened
+  // disAdv: can't use serializer by name inside htmlSugar
+  def htmlSugar[T: HTMLSerializer](value: T): String = {
+    s"<html><body>${value.toHTML}</body></html>"
+  }
+  println(htmlSugar(john))
+  println(htmlSugar(john)(PartialUserSerializer))
+
+  // overcome the disAdv using implicitly
+  def htmlSugarNamed[T: HTMLSerializer](value: T): String = {
+    val serializer = implicitly[HTMLSerializer[T]]
+    // use APIs of serializer here if required
+    s"<html><body>${value.toHTML(serializer)}</body></html>"
+  }
+  println(htmlSugarNamed(john))
+  println(htmlSugarNamed(john)(PartialUserSerializer))
+
+  // implicitly
+  case class Permission(mask: String)
+  implicit val defaultPermission = Permission("0744")
+
+  // some other part of the code
+  val standardPerms = implicitly[Permission]
 }
