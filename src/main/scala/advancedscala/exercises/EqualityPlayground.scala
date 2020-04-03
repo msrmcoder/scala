@@ -49,4 +49,8 @@ object EqualityPlayground extends App {
 
   // println(john === anotherJohn(FullEquality))
 
+  // TYPE SAFETY
+  println(john == 42) // obviously wrong. but compiler can't find this error
+  // println(john === 42) // TYPE SAFETY, compiler checks error
+
 }
