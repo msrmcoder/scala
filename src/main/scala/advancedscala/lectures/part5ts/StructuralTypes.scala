@@ -29,7 +29,7 @@ object StructuralTypes extends App {
   type AdvancedCloseable = JavaCloseable {
     def closeSilently(): Unit
   }
-  class AdvancedJavaCloseable extends AdvancedJavaCloseable {
+  class AdvancedJavaCloseable extends AdvancedCloseable {
     def close(): Unit = println("Java closes")
     def closeSilently(): Unit = println("Java closes silently")
   }
